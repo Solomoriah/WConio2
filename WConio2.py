@@ -344,18 +344,19 @@ def delline():
     ciFill = CHAR_INFO()
     hConOut = _getconout()
     csbi = _getscreeninfo()
+    dwDest = ctypes.wintypes._COORD()
     srSource.Top = csbi.dwCursorPosition.Y
     srSource.Left = csbi.srWindow.Left
     srSource.Bottom = csbi.srWindow.Bottom
     srSource.Right = csbi.srWindow.Right
     dwDest.X = csbi.srWindow.Left
     dwDest.Y = csbi.dwCursorPosition.Y
-    ciFill.Char.UnicodeChar = ctypes.c_char(b' ')
+    ciFill.Char.UnicodeChar = ctypes.c_wchar(b' ')
     ciFill.Attributes = csbi.wAttributes
-    kernel32.ScrollConsoleScreenBuffer(hConOut,
+    kernel32.ScrollConsoleScreenBufferW(hConOut,
         ctypes.byref(srSource),
         LPDWORD(ctypes.c_ulong(0)),
-        dwDest, 
+        dwDest,
         ctypes.byref(ciFill)
     )
 
@@ -364,15 +365,16 @@ def insline():
     ciFill = CHAR_INFO()
     hConOut = _getconout()
     csbi = _getscreeninfo()
+    dwDest = ctypes.wintypes._COORD()
     srSource.Top = csbi.dwCursorPosition.Y
     srSource.Left = csbi.srWindow.Left
     srSource.Bottom = csbi.srWindow.Bottom
     srSource.Right = csbi.srWindow.Right
     dwDest.X = csbi.srWindow.Left
     dwDest.Y = csbi.dwCursorPosition.Y
-    ciFill.Char.UnicodeChar = ctypes.c_char(b' ')
+    ciFill.Char.UnicodeChar = ctypes.c_wchar(b' ')
     ciFill.Attributes = csbi.wAttributes
-    kernel32.ScrollConsoleScreenBuffer(hConOut,
+    kernel32.ScrollConsoleScreenBufferW(hConOut,
         ctypes.byref(srSource),
         LPDWORD(ctypes.c_ulong(0)),
         dwDest, 
@@ -405,6 +407,8 @@ def gettext(left, top, right, bottom):
         # to replicate the Turbo C data structure.  however, we
         # almost never care about the internal structure, so here
         # we will just return the buffer we got from kernel32.
+        # NOTE that test.py versions from the 1.5 release for
+        # Python 3 will fail because of this change!
         _releaseconout(hConOut)
         return buf
     _releaseconout(hConOut)
