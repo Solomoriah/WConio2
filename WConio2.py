@@ -457,9 +457,9 @@ def putch(ch):
 
 def ungetch(ch):
     if type(ch) is int:
-        msvcrt.ungetch(bytearray(chr(ch).encode('utf8')))
+        msvcrt.ungetch(chr(ch).encode('utf8'))
     else:
-        msvcrt.ungetch(bytearray(ch))
+        msvcrt.ungetch(ch)
 
 ############################################################################
 # public functions
