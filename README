@@ -22,6 +22,17 @@ SOFTWARE.
 
 ---------------------------------------------------------------------
 
+IMPORTANT NOTE:
+
+This module does not actually work yet!
+
+The goal is to make it work with 2.7, then with 3.x; hopefully it can be made a
+single source module for both versions, but with all the character/byte
+manipulation it might not be possible, in which case it gets forked into 2.7
+and 3.x versions.
+
+---------------------------------------------------------------------
+
 This module is a pure Python reimplementation of my WConio module, and is
 generally API compatible with version 1.5.1 of that module.  WConio provides a
 color console interface for Windows applications using an interface based
