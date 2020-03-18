@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-WConio.py -- Windows Console I/O Module
+WConio2.py -- Windows Console I/O Module
 
 This is version 2 of the WConio console io module.  It uses the ctypes module,
 and thus does not need a subordinate C module, making it more portable and
@@ -124,6 +124,9 @@ __keydict = {
 import ctypes
 from ctypes import windll
 from ctypes.wintypes import *
+# missing from 2.7 wintypes
+CHAR = ctypes.c_char
+LPDWORD = ctypes.POINTER(DWORD)
 import msvcrt
 
 kernel32 = windll.kernel32
@@ -436,7 +439,7 @@ def kbhit():
     return BOOL(msvcrt.kbhit())
 
 def getch():
-    rc = ctypes.c_char(msvcrt.getch())
+    rc = ord(ctypes.c_char(msvcrt.getch()).value)
     try:
         ch = chr(rc)
     except:

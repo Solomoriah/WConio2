@@ -1,7 +1,7 @@
 import sys
 import unittest
 import time
-from WConio import *
+from WConio2 import *
 
 # indices into gettextinfo tuple
 tiTEXTATTR = 4
