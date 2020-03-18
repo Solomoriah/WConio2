@@ -1,0 +1,144 @@
+WConio2 -- Windows CONsole I/O module for Python
+
+Copyright 2015, 2020 Chris Gonnerman
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---------------------------------------------------------------------
+
+This module is a pure Python reimplementation of my WConio module, and is
+generally API compatible with version 1.5.1 of that module.  WConio provides a
+color console interface for Windows applications using an interface based
+generally on the conio.h functions included with Turbo C 2.0.  While the
+original module depended on code written by Daniel Guerrero Miralles, this
+module includes none of his code.
+
+The conio.h functions don't map perfectly to Python, so I have taken some
+liberties.  In particular, the window() functionality is not provided, and
+screen coordinates are based at 0, 0 (logical for Python, but counter to the
+tradition of conio.h).
+
+If you are porting an application written for the original WConio, it's
+perfectly acceptable to say:
+
+import WConio2 as WConio
+
+Here is a synopsis of the public interface:
+
+WConio2.error is thrown for exceptions special to this module.
+
+WConio2.cgets(length) gets (and echos) a string up to length characters long.
+VERY MINIMAL editing is allowed (basically backspace).
+
+WConio2.clreol() clears from the cursor position to the end of the line.
+
+WConio2.clrscr() clears the screen and homes the cursor.
+
+WConio2.cputs(string) prints a string starting at the current cursor position.
+Some control characters are handled, but unlike the traditional version '\n'
+doesn't drop a line in the same column, instead it acts like '\r\n'.
+
+WConio2.delline() remove a line at the current cursor position, scrolling the
+lower part of the frame up.
+
+WConio2.getch() retrieves a keystroke from the console, returning a tuple of
+(number, string) containing the numeric and character values for the key hit.
+getch() does not echo, and delays until a key is available.  If the key hit has
+no character representation a null string ('') is returned.  Note that special
+keys will arrive in two steps, either a null byte followed by a scancode or
+0340 followed by a scan code for gray keys.
+
+WConio2.getche() works exactly like getch(), but if the key read is printable
+it is echoed.
+
+WConio2.getkey() is my contribution... it always returns a single string value,
+with special names for non-ascii keys.  Valid keynames are listed in
+WConio2.py, so I won't repeat them here.
+
+WConio2.gettext(left, top, right, bottom) copies characters and attributes from
+the screen coordinates given and returns them in a string buffer.  Usually used
+with puttext() below.
+
+WConio2.gettextinfo() returns a tuple of display information.  It mirrors the
+info returned by the traditional version:
+
+    - left, top, right, bottom:  window coordinates
+    - textattr, normattr: current attributes
+    - videomode:  current video mode
+    - height, width:  screen size
+    - curx, cury:  current cursor position
+
+Some information is faked.
+
+WConio2.gotoxy(x, y) positions the cursor at the given coordinates.
+
+WConio2.highvideo() activates bold (bright) video mode.
+
+WConio2.insline() inserts a blank line at the current position, scrolling down
+the rest of the screen.
+
+WConio2.kbhit() returns true if a keystroke is in the buffer, false otherwise.
+If it returns true, getch()/getkey() won't block.
+
+WConio2.lowvideo() activates low intensity (dim) video mode.
+
+WConio2.movetext(left, top, right, bottom, x, y) moves the given text region to
+the new x, y position.
+ 
+WConio2.normvideo() activates normal intensity video mode.  Fundamentally equal
+to lowvideo().
+
+WConio2.putch(ch) expects either a numeric or single-character string and
+prints it at the current position.
+
+WConio2.puttext(left, top, right, bottom, saved) puts the given saved text
+block on the screen at the given coordinates.  The left, top, right, bottom
+coordinates should *probably* match the geometry of the similar coordinates
+used in the gettext() call.
+
+WConio2.setcursortype(n) changes the appearance of the text-mode cursor.  The
+values for n are 0 for no cursor, 1 for normal cursor, 2 for block cursor.
+
+WConio2.textattr(attr) changes the text attribute (color) for new text.  The
+data value is formatted with the foreground color in the lower nibble, and the
+background color in the upper.  This differs from the traditional version in
+that blinking is not available, but high-intensity backgrounds are available.
+See below for the color constants.
+
+WConio2.textbackground(color) sets the background color without changing the
+foreground.  See below for the color constants.
+
+WConio2.textcolor(color) sets the foreground color without changing the
+background.  See below for the color constants.
+
+WConio2.textmode() resets default video mode, clears the screen, homes the
+cursor, and puts the cursor shape back to normal.
+
+WConio2.ungetch(ch) pushes a keystroke back into the keyboard buffer.  ch may
+be either an integer value or one-character string.  Only one byte can be
+pushed back this way; that means that special keys can't be pushed, since they
+involve a two-byte sequence.
+
+WConio2.wherex() returns the current cursor x position.
+
+WConio2.wherey() returns the current cursor y position.
+
+The WConio2 module also contains constants for colors, named in uppercase;
+review WConio2.py for details.
+
