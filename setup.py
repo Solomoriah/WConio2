@@ -5,7 +5,7 @@ WConio2.py
 ----------
 
 This module is a pure Python reimplementation of my WConio module, and is
-generally API compatible with version 1.5.1 of that module.  WConio provides a
+generally API compatible with version 1.5.1 of that module.  WConio2 provides a
 color console interface for Windows applications using an interface based
 generally on the conio.h functions included with Turbo C 2.0.  While the
 original module depended on code written by Daniel Guerrero Miralles, this
