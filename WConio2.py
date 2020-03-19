@@ -128,6 +128,19 @@ from ctypes.wintypes import *
 CHAR = ctypes.c_char
 LPDWORD = ctypes.POINTER(DWORD)
 import msvcrt
+import sys
+
+# Python 2 and 3 handle wchar type initializers differently
+# this is meant to deal with that
+
+if sys.version_info >= (3, 0):
+    _A_BLANK = u' '
+    def _fixkey(ch):
+        return ch.encode()
+else:
+    _A_BLANK = b' '
+    def _fixkey(ch):
+        return ch
 
 kernel32 = windll.kernel32
 
@@ -351,7 +364,7 @@ def delline():
     srSource.Right = csbi.srWindow.Right
     dwDest.X = csbi.srWindow.Left
     dwDest.Y = csbi.dwCursorPosition.Y
-    ciFill.Char.UnicodeChar = ctypes.c_wchar(b' ')
+    ciFill.Char.UnicodeChar = ctypes.c_wchar(_A_BLANK)
     ciFill.Attributes = csbi.wAttributes
     kernel32.ScrollConsoleScreenBufferW(hConOut,
         ctypes.byref(srSource),
@@ -372,7 +385,7 @@ def insline():
     srSource.Right = csbi.srWindow.Right
     dwDest.X = csbi.srWindow.Left
     dwDest.Y = csbi.dwCursorPosition.Y
-    ciFill.Char.UnicodeChar = ctypes.c_wchar(b' ')
+    ciFill.Char.UnicodeChar = ctypes.c_wchar(_A_BLANK)
     ciFill.Attributes = csbi.wAttributes
     kernel32.ScrollConsoleScreenBufferW(hConOut,
         ctypes.byref(srSource),
@@ -461,9 +474,9 @@ def putch(ch):
 
 def ungetch(ch):
     if type(ch) is int:
-        msvcrt.ungetch(chr(ch).encode('utf8'))
+        msvcrt.ungetch(_fixkey(chr(ch).encode('utf8')))
     else:
-        msvcrt.ungetch(ch)
+        msvcrt.ungetch(_fixkey(ch))
 
 ############################################################################
 # public functions
@@ -479,7 +492,7 @@ def getkey():
     # just confuses the end-user if they need to know.
     if n == 0 or n == 0xE0:
         n, c = getch()
-        if __keydict.has_key(n):
+        if n in __keydict:
             return __keydict[n]
         return "key%x" % n
     return c
