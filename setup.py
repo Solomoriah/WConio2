@@ -26,7 +26,7 @@ from distutils.core import setup
 setup(
   name = 'WConio2',
   py_modules = ['WConio2'],
-  version = '2.0',
+  version = '2.0.1',
   license='MIT',
   description="Windows Console I/O",
   long_description=long_description,
