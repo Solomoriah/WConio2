@@ -135,7 +135,7 @@ except ImportError as e:
         "https://learn.microsoft.com/en-us/cpp/c-runtime-library/console-and-port-i-o"))
     print(msg)
     raise e
-    #raise ImportError(msg) from e  # @TODO: frop Py2 and use this line
+    #raise ImportError(msg) from e  # @TODO: drop Py2 and use this line
 # missing from 2.7 wintypes
 CHAR = ctypes.c_char
 LPDWORD = ctypes.POINTER(DWORD)
