@@ -459,7 +459,7 @@ def puttext(left, top, right, bottom, source):
     _releaseconout(hConOut)
 
 def settitle(title):
-    if kernel32.SetConsoleTitle(title) == 0:
+    if kernel32.SetConsoleTitleW(title) == 0:
         raise error("settitle failed")
 
 def kbhit():
