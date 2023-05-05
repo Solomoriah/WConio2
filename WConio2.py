@@ -121,14 +121,24 @@ __keydict = {
 
 # connect to kernel32.dll, which actually does all the business.
 
+import sys
 import ctypes
-from ctypes import windll
-from ctypes.wintypes import *
+try:
+    from ctypes import windll
+    from ctypes.wintypes import *
+    import msvcrt
+except ImportError as e:
+    msg = "\n".join((
+        "Some items not available (maybe it's the wrong platform).",
+        "Note that conio.h is only supported on Windows.",
+        "For more details, please check: "
+        "https://learn.microsoft.com/en-us/cpp/c-runtime-library/console-and-port-i-o"))
+    print(msg)
+    raise e
+    #raise ImportError(msg) from e  # @TODO: drop Py2 and use this line
 # missing from 2.7 wintypes
 CHAR = ctypes.c_char
 LPDWORD = ctypes.POINTER(DWORD)
-import msvcrt
-import sys
 
 # Python 2 and 3 handle wchar type initializers differently
 # this is meant to deal with that
